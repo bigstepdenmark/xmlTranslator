@@ -1,7 +1,6 @@
 package dk.cphsoftdev.app.controller;
 
 import org.joda.time.DateTime;
-
 import java.text.SimpleDateFormat;
 
 public class Translator

@@ -3,6 +3,7 @@ package dk.cphsoftdev.app.controller;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 public class ReceiveController
@@ -47,6 +48,20 @@ public class ReceiveController
         }
     }
 
+    public ArrayList<String> getMessages()
+    {
+        try
+        {
+            return handleDelivery();
+        }
+        catch( IOException e )
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * Create Factory, connection and channel
      *
@@ -58,11 +73,7 @@ public class ReceiveController
         {
             return createFactory() && newConnection() && createChannel();
         }
-        catch( IOException e )
-        {
-            e.printStackTrace();
-        }
-        catch( TimeoutException e )
+        catch( IOException | TimeoutException e )
         {
             e.printStackTrace();
         }
@@ -100,8 +111,10 @@ public class ReceiveController
      *
      * @throws IOException
      */
-    private void handleDelivery() throws IOException
+    private ArrayList<String> handleDelivery() throws IOException
     {
+        ArrayList<String> messages = new ArrayList<>();
+
         channel.queueDeclare( queueName, false, false, false, null );
         System.out.println( "\nWaiting for messages. To exit press CTRL+C" );
         System.out.println( "====================================================" );
@@ -113,10 +126,14 @@ public class ReceiveController
             {
                 String message = new String( body, "UTF-8" );
                 System.out.println( "[Received] --> '" + message + "'" );
+                messages.add( message );
+
             }
         };
 
         channel.basicConsume( queueName, true, consumer );
+
+        return messages;
     }
 
     /**
