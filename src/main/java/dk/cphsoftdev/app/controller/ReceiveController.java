@@ -36,19 +36,12 @@ public class ReceiveController
     /**
      * Print received messages
      */
-    public void printMessages()
+    public void printMessage()
     {
-        try
-        {
-            handleDelivery();
-        }
-        catch( IOException e )
-        {
-            e.printStackTrace();
-        }
+        System.out.println( getMessage() );
     }
 
-    public ArrayList<String> getMessages()
+    public String getMessage()
     {
         try
         {
@@ -60,6 +53,15 @@ public class ReceiveController
         }
 
         return null;
+    }
+
+    /**
+     * Check message length is > 0
+     * @return boolean
+     */
+    public boolean isReady()
+    {
+        return getMessage().length() > 0;
     }
 
     /**
@@ -111,9 +113,9 @@ public class ReceiveController
      *
      * @throws IOException
      */
-    private ArrayList<String> handleDelivery() throws IOException
+    private String handleDelivery() throws IOException
     {
-        ArrayList<String> messages = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
 
         channel.queueDeclare( queueName, false, false, false, null );
         System.out.println( "\nWaiting for messages. To exit press CTRL+C" );
@@ -126,14 +128,15 @@ public class ReceiveController
             {
                 String message = new String( body, "UTF-8" );
                 System.out.println( "[Received] --> '" + message + "'" );
-                messages.add( message );
+
+                builder.append( message );
 
             }
         };
 
         channel.basicConsume( queueName, true, consumer );
 
-        return messages;
+        return builder.toString();
     }
 
     /**

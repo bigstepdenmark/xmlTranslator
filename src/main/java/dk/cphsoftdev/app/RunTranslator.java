@@ -8,26 +8,30 @@ public class RunTranslator
 {
     public static void main( String[] args )
     {
-        ReceiveController receive = new ReceiveController( "group3.bank.normalizator" );
-        SenderController sender = new SenderController( "cphbusiness.bankXML", "", "group3.bank.normalizator" );
+//        ReceiveController receive = new ReceiveController( "group3.bank.normalizator" );
+//        SenderController sender = new SenderController( "cphbusiness.bankXML", "", "group3.bank.normalizator" );
+//
+//        sender.sendMessage( new Translator( "1209855372,500,12000.0,48" ).toXML() );
+//        receive.printMessages();
+//
+//        sender.close();
+//        receive.close();
 
-        sender.sendMessage( new Translator( "1209855372,500,12000.0,48" ).toXML() );
-        receive.printMessages();
-
-        sender.close();
-        receive.close();
+        // ReceiveController receive = new ReceiveController( "group3.reciplist.xmltranslator" );
+        // receive.printMessages();
+        // receive.close();
 
         // Start Translator (On production use this)
         // -----------------------------------------------------------------------------------------------
-/*        ReceiveController receive = new ReceiveController( "group3.reciplist.xmltranslator" );
-        SenderController sender = new SenderController( "cphbusiness.bankXML", "", "group3.bank.normalizator" );
+        ReceiveController receiver = new ReceiveController( "group3.reciplist.xmltranslator" );
 
-        for( String message : receive.getMessages() )
+        if( receiver.isReady() )
         {
-            sender.sendMessage( new Translator( message ).toXML() );
+            SenderController sender = new SenderController( "cphbusiness.bankXML", "", "group3.bank.normalizator" );
+            sender.sendMessage( new Translator( receiver.getMessage() ).toXML() );
+            sender.close();
         }
 
-        sender.close();
-        receive.close();*/
+        receiver.close();
     }
 }
